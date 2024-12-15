@@ -1,8 +1,8 @@
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour {
-    public int width;
-    public int height;
+    public int width = 100;
+    public int height = 100;
 
     [Range(0, 100)]
     public int fullPresent;
@@ -34,8 +34,21 @@ public class MapGenerator : MonoBehaviour {
             SmoothMap();
         }
 
+        int borderSize = 5;
+        int[,] borderedMap = new int[width + borderSize * 2, height + borderSize * 2];
+
+        for (int i = 0; i < borderedMap.GetLength(0); i++) {
+            for (int j = 0; j < borderedMap.GetLength(1); j++) {
+                if (i >= borderSize && i < width + borderSize && j >= borderSize && j < height + borderSize) {
+                    borderedMap[i, j] = map[i - borderSize, j - borderSize];
+                } else {
+                    borderedMap[i, j] = 1;
+                }
+            }
+        }
+
         MeshGenerator meshGenerator = GetComponent<MeshGenerator>();
-        meshGenerator.GenerateMesh(map, 1);
+        meshGenerator.GenerateMesh(borderedMap, 1);
     }
 
     void RandomFillMap() {
